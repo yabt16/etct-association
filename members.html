@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ETCT Members – Ethiopian Cadets Association</title>
+<style>
+  :root {
+    --navy:   #08111f;
+    --deep:   #0c1d36;
+    --card:   #0f2240;
+    --border: rgba(180,140,60,0.2);
+    --gold:   #c9973a;
+    --gold2:  #e8b84b;
+    --white:  #f0ece2;
+    --muted:  #7a90b0;
+    --serif:  Georgia, 'Times New Roman', serif;
+    --sans:   -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--white); font-family: var(--sans); overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(8,17,31,0.98); border-bottom: 1px solid var(--border);
+    height: 60px; padding: 0 1.2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: var(--serif); font-size: 1.4rem; color: var(--gold); font-weight: 700; text-decoration: none; line-height: 1; }
+  .logo small { display: block; font-family: var(--sans); font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+  .hamburger { background: none; border: none; cursor: pointer; padding: 0.4rem; display: flex; flex-direction: column; gap: 5px; -webkit-tap-highlight-color: transparent; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-drawer { display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; z-index: 199; background: rgba(8,17,31,0.99); flex-direction: column; padding: 1.5rem 1.5rem 2rem; border-top: 1px solid var(--border); overflow-y: auto; }
+  .nav-drawer.open { display: flex; }
+  .nav-links-list { list-style: none; margin-bottom: 1.5rem; }
+  .nav-links-list li { border-bottom: 1px solid var(--border); }
+  .nav-links-list a { display: flex; align-items: center; gap: 0.8rem; padding: 1rem 0; color: var(--white); text-decoration: none; font-size: 1rem; font-weight: 600; transition: color 0.2s; -webkit-tap-highlight-color: transparent; }
+  .nav-links-list a:hover, .nav-links-list a.active { color: var(--gold); }
+  .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+  .nav-join-btn { display: block; background: var(--gold); color: var(--navy); padding: 0.9rem; border-radius: 6px; text-align: center; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: background 0.25s; }
+  .nav-join-btn:hover { background: var(--gold2); }
+
+  /* ── PAGE ── */
+  .page { padding-top: 60px; }
+  .container { padding: 1.8rem 1.1rem; }
+
+  /* ── HEADER ── */
+  .page-header { margin-bottom: 1.8rem; }
+  .page-tag { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .page-tag::before { content: ''; width: 22px; height: 1px; background: var(--gold); flex-shrink: 0; }
+  .page-title { font-family: var(--serif); font-size: clamp(1.6rem, 6vw, 2.4rem); font-weight: 700; margin-bottom: 0.4rem; }
+  .page-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex; gap: 0; margin-bottom: 1.8rem;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .s-stat { flex: 1; text-align: center; padding: 1rem 0.5rem; border-right: 1px solid var(--border); }
+  .s-stat:last-child { border-right: none; }
+  .s-num { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); font-weight: 700; line-height: 1; }
+  .s-label { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.25rem; }
+
+  /* ── SEARCH & FILTER ── */
+  .search-filter { margin-bottom: 1.4rem; }
+  .search-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  .search-row input {
+    flex: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--white); font-family: var(--sans);
+    font-size: 1rem; padding: 0.7rem 0.9rem; outline: none;
+    -webkit-appearance: none;
+  }
+  .search-row input::placeholder { color: var(--muted); }
+  .search-row input:focus { border-color: var(--gold); }
+  .search-row button { background: var(--gold); color: var(--navy); border: none; border-radius: 8px; padding: 0.7rem 1rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: var(--sans); -webkit-tap-highlight-color: transparent; }
+
+  /* Filter chips */
+  .filter-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0.3rem; }
+  .filter-chips { display: flex; gap: 0.4rem; width: max-content; }
+  .chip { padding: 0.4rem 0.85rem; border-radius: 20px; white-space: nowrap; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); color: var(--muted); background: transparent; font-family: var(--sans); -webkit-tap-highlight-color: transparent; -webkit-appearance: none; transition: all 0.2s; }
+  .chip.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+
+  /* ── RESULTS BAR ── */
+  .results-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .results-count { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+  .sort-select { background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-family: var(--sans); font-size: 0.78rem; padding: 0.4rem 0.7rem; outline: none; -webkit-appearance: none; cursor: pointer; }
+
+  /* ── MEMBER GRID ── */
+  .member-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+
+  /* ── MEMBER CARD ── */
+  .member-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .member-card:hover { border-color: rgba(201,151,58,0.45); transform: translateY(-3px); }
+  .member-card.expanded { border-color: var(--gold); }
+
+  .card-top {
+    padding: 1.2rem 1rem 0.8rem;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .m-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    margin-bottom: 0.7rem; flex-shrink: 0;
+    border: 2px solid rgba(201,151,58,0.3);
+  }
+
+  .m-name { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; line-height: 1.2; }
+  .m-location { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.5rem; }
+
+  .m-type-badge {
+    font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.55rem;
+    border-radius: 20px; letter-spacing: 0.04em;
+  }
+  .type-deck    { background: rgba(76,175,130,0.15);  color: #4caf82; }
+  .type-engine  { background: rgba(100,130,255,0.15); color: #8090ff; }
+  .type-presea  { background: rgba(80,180,220,0.15);  color: #50b4dc; }
+  .type-officer { background: rgba(201,151,58,0.15);  color: var(--gold); }
+  .type-alumni  { background: rgba(220,120,80,0.15);  color: #dc7850; }
+
+  .card-meta { padding: 0.7rem 1rem; }
+  .meta-row { display: flex; align-items: flex-start; gap: 0.4rem; margin-bottom: 0.35rem; }
+  .meta-icon { font-size: 0.72rem; margin-top: 0.05rem; flex-shrink: 0; }
+  .meta-text { font-size: 0.72rem; color: var(--muted); line-height: 1.4; }
+
+  /* Expanded bio */
+  .card-bio { display: none; padding: 0 1rem 0.9rem; }
+  .card-bio.open { display: block; }
+  .bio-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.3rem; }
+  .bio-text { font-size: 0.78rem; color: var(--muted); line-height: 1.65; }
+
+  .card-footer { padding: 0.6rem 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .expand-hint { font-size: 0.68rem; color: var(--gold); font-weight: 600; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf82; }
+  .status-dot.away { background: var(--gold); }
+  .status-dot.offline { background: var(--muted); }
+
+  /* ── NO RESULTS ── */
+  .no-results { text-align: center; padding: 3rem 1rem; color: var(--muted); grid-column: 1/-1; }
+  .no-results .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 1.2rem; text-align: center; margin-top: 2rem; }
+  footer p { font-size: 0.75rem; color: var(--muted); }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 380px) {
+    .member-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">ETCT <small>Ethiopian Cadets Association</small></a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <ul class="nav-links-list">
+    <li><a href="index.html"><span class="nav-icon">🏠</span> Home</a></li>
+    <li><a href="index.html#features"><span class="nav-icon">⚓</span> About</a></li>
+    <li><a href="members.html" class="active"><span class="nav-icon">👥</span> Members</a></li>
+    <li><a href="index.html#courses"><span class="nav-icon">📚</span> Courses</a></li>
+    <li><a href="index.html#financial"><span class="nav-icon">💰</span> Financial Aid</a></li>
+    <li><a href="forum.html"><span class="nav-icon">💬</span> Discussion Forum</a></li>
+    <li><a href="index.html#register"><span class="nav-icon">📝</span> Register</a></li>
+  </ul>
+  <a href="index.html#register" class="nav-join-btn">✦ Join ETCT Now</a>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-tag">Our Community</div>
+    <h1 class="page-title">ETCT Members</h1>
+    <p class="page-sub">Connect with Ethiopian merchant navy cadets and officers from across the world.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="s-stat"><div class="s-num" id="totalCount">0</div><div class="s-label">Members</div></div>
+    <div class="s-stat"><div class="s-num">3</div><div class="s-label">Deck</div></div>
+    <div class="s-stat"><div class="s-num">3</div><div class="s-label">Engine</div></div>
+    <div class="s-stat"><div class="s-num">3</div><div class="s-label">Officers</div></div>
+  </div>
+
+  <!-- SEARCH & FILTER -->
+  <div class="search-filter">
+    <div class="search-row">
+      <input type="search" id="searchInput" placeholder="Search by name, location..." oninput="applyFilters()">
+      <button onclick="applyFilters()">🔍</button>
+    </div>
+    <div class="filter-wrap">
+      <div class="filter-chips">
+        <button class="chip active" onclick="setFilter(this,'all')">All Members</button>
+        <button class="chip" onclick="setFilter(this,'deck')">🚢 Deck Cadet</button>
+        <button class="chip" onclick="setFilter(this,'engine')">🔧 Engine Cadet</button>
+        <button class="chip" onclick="setFilter(this,'presea')">🎓 Pre-Sea</button>
+        <button class="chip" onclick="setFilter(this,'officer')">⭐ Officer</button>
+        <button class="chip" onclick="setFilter(this,'alumni')">🏅 Alumni</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS BAR -->
+  <div class="results-bar">
+    <span class="results-count" id="resultsCount">Showing all members</span>
+    <select class="sort-select" onchange="applyFilters()" id="sortSelect">
+      <option value="name">Sort: Name</option>
+      <option value="exp">Sort: Experience</option>
+      <option value="location">Sort: Location</option>
+    </select>
+  </div>
+
+  <!-- MEMBER GRID -->
+  <div class="member-grid" id="memberGrid"></div>
+
+</div>
+</div>
+
+<footer>
+  <p>ETCT Association · <a href="index.html">Home</a> · <a href="forum.html">Forum</a> · © 2026 All rights reserved.</p>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMenu() {
+  var h = document.getElementById('hamburger');
+  var d = document.getElementById('navDrawer');
+  h.classList.toggle('open');
+  d.classList.toggle('open');
+  document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+}
+document.querySelectorAll('.nav-links-list a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('navDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// ── DATA ──
+var members = [
+  { id:1,  name:'Amir Tadesse',   initials:'AT', location:'Addis Ababa', type:'deck',    typeLabel:'Deck Cadet',    institute:'Ethiopian Maritime Training Institute', exp:'2nd Year', bio:'Passionate about navigation and seamanship. Looking to connect with fellow deck cadets and share study resources for STCW exams.', color:'linear-gradient(135deg,#c9973a,#5a3e10)', status:'online' },
+  { id:2,  name:'Biniam Girma',   initials:'BG', location:'Dire Dawa',   type:'engine',  typeLabel:'Engine Cadet',  institute:'Djibouti Maritime Institute',           exp:'1st Year', bio:'Engine cadet fascinated by marine diesel engines and electrical systems. Happy to help anyone with engine room basics.', color:'linear-gradient(135deg,#5070c0,#1a2a60)', status:'online' },
+  { id:3,  name:'Chaltu Worku',   initials:'CW', location:'Jimma',       type:'presea',  typeLabel:'Pre-Sea',       institute:'Awaiting enrollment',                   exp:'Pre-Sea',  bio:'Just passed my entrance exam and preparing for pre-sea training. Very excited to start this journey and learn from everyone here.', color:'linear-gradient(135deg,#50a0c0,#1a4060)', status:'away' },
+  { id:4,  name:'Dawit Kebede',   initials:'DK', location:'Mekelle',     type:'officer', typeLabel:'3rd Officer',   institute:'Gondar Maritime College',               exp:'4 Years',  bio:'Serving as 3rd Officer on a bulk carrier. Willing to mentor cadets and answer questions about watchkeeping and career progression.', color:'linear-gradient(135deg,#c9973a,#7a5010)', status:'online' },
+  { id:5,  name:'Eden Haile',     initials:'EH', location:'Addis Ababa', type:'deck',    typeLabel:'Deck Cadet',    institute:'Ethiopian Maritime Training Institute', exp:'3rd Year', bio:'Final year deck cadet preparing for MMD orals. Interested in container shipping and port operations.', color:'linear-gradient(135deg,#4caf82,#1a5c3a)', status:'online' },
+  { id:6,  name:'Fikadu Mamo',    initials:'FM', location:'Hawassa',     type:'engine',  typeLabel:'Engine Cadet',  institute:'Djibouti Maritime Institute',           exp:'2nd Year', bio:'Engine cadet with a background in mechanical engineering. Joined ETCT to find study partners and get career advice.', color:'linear-gradient(135deg,#c05060,#601020)', status:'offline' },
+  { id:7,  name:'Gelila Tesfaye', initials:'GT', location:'Bahir Dar',   type:'alumni',  typeLabel:'Alumni',        institute:'Ethiopian Maritime Training Institute', exp:'6+ Years', bio:'Now working as 2nd Engineer on an oil tanker. Happy to share my experience and guide younger cadets through their training journey.', color:'linear-gradient(135deg,#dc7850,#6c2810)', status:'away' },
+  { id:8,  name:'Henok Bekele',   initials:'HB', location:'Adama',       type:'presea',  typeLabel:'Pre-Sea',       institute:'Applying to institutes',                exp:'Pre-Sea',  bio:'Mechanical engineering graduate looking to transition into maritime. Researching pre-sea training options and sponsorships.', color:'linear-gradient(135deg,#7050c0,#301060)', status:'online' },
+  { id:9,  name:'Ibsa Nura',      initials:'IN', location:'Dire Dawa',   type:'deck',    typeLabel:'Deck Cadet',    institute:'Djibouti Maritime Institute',           exp:'1st Year', bio:'Brand new deck cadet loving every day of training. Looking forward to first sign-on and keen to learn from senior cadets.', color:'linear-gradient(135deg,#50a090,#1a4040)', status:'online' },
+  { id:10, name:'Kidist Alemu',   initials:'KA', location:'Addis Ababa', type:'officer', typeLabel:'Chief Officer', institute:'Gondar Maritime College',               exp:'8 Years',  bio:'Chief Officer with 8 years experience across tankers and bulk carriers. One of the founding members of ETCT Association.', color:'linear-gradient(135deg,#c9973a,#3a2000)', status:'online' },
+  { id:11, name:'Lemi Girma',     initials:'LG', location:'Gondar',      type:'engine',  typeLabel:'Engine Cadet',  institute:'Gondar Maritime College',               exp:'3rd Year', bio:'Final year engine cadet specializing in refrigeration systems. Looking for sponsorship opportunities with reefer vessel companies.', color:'linear-gradient(135deg,#4090c0,#102050)', status:'away' },
+  { id:12, name:'Meron Teshome',  initials:'MT', location:'Mombasa',     type:'officer', typeLabel:'2nd Officer',   institute:'Ethiopian Maritime Training Institute', exp:'5 Years',  bio:'Currently sailing as 2nd Officer on a general cargo ship. Passionate about GMDSS and navigational equipment.', color:'linear-gradient(135deg,#c05090,#601040)', status:'online' },
+];
+
+var activeFilter = 'all';
+var expandedId = null;
+
+// Type style map
+var typeStyles = {
+  deck:    'type-deck',
+  engine:  'type-engine',
+  presea:  'type-presea',
+  officer: 'type-officer',
+  alumni:  'type-alumni'
+};
+
+// ── FILTER & SORT ──
+function setFilter(el, type) {
+  document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  activeFilter = type;
+  expandedId = null;
+  applyFilters();
+}
+
+function applyFilters() {
+  var q    = document.getElementById('searchInput').value.toLowerCase().trim();
+  var sort = document.getElementById('sortSelect').value;
+
+  var filtered = members.filter(function(m) {
+    var matchType = activeFilter === 'all' || m.type === activeFilter;
+    var matchQ    = !q || m.name.toLowerCase().includes(q) || m.location.toLowerCase().includes(q) || m.institute.toLowerCase().includes(q) || m.typeLabel.toLowerCase().includes(q);
+    return matchType && matchQ;
+  });
+
+  filtered.sort(function(a, b) {
+    if (sort === 'name')     return a.name.localeCompare(b.name);
+    if (sort === 'location') return a.location.localeCompare(b.location);
+    if (sort === 'exp') {
+      var order = ['Pre-Sea','1st Year','2nd Year','3rd Year','4 Years','5 Years','6+ Years','8 Years'];
+      return order.indexOf(a.exp) - order.indexOf(b.exp);
+    }
+    return 0;
+  });
+
+  renderMembers(filtered);
+  document.getElementById('totalCount').textContent = members.length;
+  document.getElementById('resultsCount').textContent = filtered.length === members.length
+    ? 'Showing all ' + members.length + ' members'
+    : 'Showing ' + filtered.length + ' of ' + members.length + ' members';
+}
+
+// ── RENDER ──
+function renderMembers(list) {
+  var grid = document.getElementById('memberGrid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="no-results"><div class="icon">🔍</div><p>No members found matching your search.</p></div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(function(m) {
+    var isExpanded = expandedId === m.id;
+    var statusClass = m.status === 'online' ? '' : (m.status === 'away' ? ' away' : ' offline');
+    return '<div class="member-card' + (isExpanded ? ' expanded' : '') + '" id="mc-' + m.id + '" onclick="toggleCard(' + m.id + ')">'
+      + '<div class="card-top">'
+      + '<div class="m-avatar" style="background:' + m.color + '">' + m.initials + '</div>'
+      + '<div class="m-name">' + m.name + '</div>'
+      + '<div class="m-location">📍 ' + m.location + '</div>'
+      + '<span class="m-type-badge ' + typeStyles[m.type] + '">' + m.typeLabel + '</span>'
+      + '</div>'
+      + '<div class="card-meta">'
+      + '<div class="meta-row"><span class="meta-icon">🏫</span><span class="meta-text">' + m.institute + '</span></div>'
+      + '<div class="meta-row"><span class="meta-icon">⏱</span><span class="meta-text">' + m.exp + '</span></div>'
+      + '</div>'
+      + '<div class="card-bio' + (isExpanded ? ' open' : '') + '" id="bio-' + m.id + '">'
+      + '<div class="bio-label">About</div>'
+      + '<div class="bio-text">' + m.bio + '</div>'
+      + '</div>'
+      + '<div class="card-footer">'
+      + '<span class="expand-hint">' + (isExpanded ? '▲ Less' : '▼ More') + '</span>'
+      + '<div class="status-dot' + statusClass + '"></div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── TOGGLE CARD ──
+function toggleCard(id) {
+  expandedId = (expandedId === id) ? null : id;
+  applyFilters();
+  if (expandedId) {
+    setTimeout(function() {
+      var el = document.getElementById('mc-' + id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+}
+
+// ── INIT ──
+applyFilters();
+</script>
+</body>
+</html>
