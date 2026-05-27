@@ -27,20 +27,44 @@
   /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-    background: rgba(8,17,31,0.97);
+    background: rgba(8,17,31,0.98);
     border-bottom: 1px solid var(--border);
-    padding: 0 1.5rem;
-    height: 64px;
+    padding: 0 1.2rem;
+    height: 60px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .logo { font-family: var(--serif); font-size: 1.6rem; color: var(--gold); font-weight: 700; line-height: 1; }
-  .logo small { display: block; font-family: var(--sans); font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .logo { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); font-weight: 700; line-height: 1; text-decoration: none; }
+  .logo small { display: block; font-family: var(--sans); font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .hamburger {
+    background: none; border: none; cursor: pointer; padding: 0.4rem;
+    display: flex; flex-direction: column; gap: 5px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-drawer {
+    display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; z-index: 199;
+    background: rgba(8,17,31,0.99); flex-direction: column;
+    padding: 1.5rem 1.5rem 2rem; border-top: 1px solid var(--border); overflow-y: auto;
+  }
+  .nav-drawer.open { display: flex; }
+  .nav-links-list { list-style: none; margin-bottom: 1.5rem; }
+  .nav-links-list li { border-bottom: 1px solid var(--border); }
+  .nav-links-list a {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 1rem 0; color: var(--white); text-decoration: none;
+    font-size: 1rem; font-weight: 600; transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-links-list a:hover, .nav-links-list a.active { color: var(--gold); }
+  .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
   .nav-join {
-    background: var(--gold); color: var(--navy);
-    padding: 0.5rem 1.2rem; border-radius: 3px;
-    font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em;
-    text-transform: uppercase; text-decoration: none;
-    transition: background 0.25s;
+    display: block; background: var(--gold); color: var(--navy);
+    padding: 0.9rem; border-radius: 6px; text-align: center;
+    font-weight: 700; font-size: 0.95rem; letter-spacing: 0.08em;
+    text-transform: uppercase; text-decoration: none; transition: background 0.25s;
   }
   .nav-join:hover { background: var(--gold2); }
 
@@ -298,12 +322,25 @@
 
 <!-- NAV -->
 <nav>
-  <div class="logo">
-    ETCT
-    <small>Ethiopian Cadets Association</small>
-  </div>
-  <a href="#register" class="nav-join">Join Now</a>
+  <a href="index.html" class="logo">ETCT <small>Ethiopian Cadets Association</small></a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE DRAWER -->
+<div class="nav-drawer" id="navDrawer">
+  <ul class="nav-links-list">
+    <li><a href="index.html" class="active"><span class="nav-icon">🏠</span> Home</a></li>
+    <li><a href="#features"><span class="nav-icon">⚓</span> About</a></li>
+    <li><a href="#community"><span class="nav-icon">👥</span> Members</a></li>
+    <li><a href="#courses"><span class="nav-icon">📚</span> Courses</a></li>
+    <li><a href="#financial"><span class="nav-icon">💰</span> Financial Aid</a></li>
+    <li><a href="forum.html"><span class="nav-icon">💬</span> Discussion Forum</a></li>
+    <li><a href="#register"><span class="nav-icon">📝</span> Register</a></li>
+  </ul>
+  <a href="#register" class="nav-join" onclick="closeMenu()">✦ Join ETCT Now</a>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -492,6 +529,25 @@
 </footer>
 
 <script>
+  // ── HAMBURGER MENU ──
+  function toggleMenu() {
+    var h = document.getElementById('hamburger');
+    var d = document.getElementById('navDrawer');
+    h.classList.toggle('open');
+    d.classList.toggle('open');
+    document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('navDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // Close menu when any nav link is tapped
+  document.querySelectorAll('.nav-links-list a').forEach(function(a) {
+    a.addEventListener('click', closeMenu);
+  });
+
+  // ── MEMBERSHIP FORM ──
   function submitForm() {
     var fname = document.getElementById('fname').value.trim();
     var lname = document.getElementById('lname').value.trim();
@@ -500,17 +556,12 @@
     var city  = document.getElementById('city').value.trim();
     var type  = document.getElementById('cadetType').value;
     var err   = document.getElementById('form-error');
-
     if (!fname || !lname || !email || !phone || !city || !type) {
-      err.style.display = 'block';
-      return;
+      err.style.display = 'block'; return;
     }
-
     err.style.display = 'none';
     document.getElementById('theForm').style.display = 'none';
     document.getElementById('successMsg').style.display = 'block';
-
-    // Scroll to success message
     document.getElementById('regFormBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 </script>
