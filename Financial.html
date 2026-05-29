@@ -1,1 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ETCT Financial Aid & Career – Ethiopian Cadets Association</title>
+<style>
+  :root {
+    --navy:   #08111f;
+    --deep:   #0c1d36;
+    --card:   #0f2240;
+    --border: rgba(180,140,60,0.2);
+    --gold:   #c9973a;
+    --gold2:  #e8b84b;
+    --white:  #f0ece2;
+    --muted:  #7a90b0;
+    --green:  #4caf82;
+    --red:    #e05a5a;
+    --blue:   #5090d0;
+    --serif:  Georgia, 'Times New Roman', serif;
+    --sans:   -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--white); font-family: var(--sans); overflow-x: hidden; -webkit-text-size-adjust: 100%; }
 
+  /* ── NAV ── */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: rgba(8,17,31,0.98); border-bottom: 1px solid var(--border); height: 60px; padding: 0 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: var(--serif); font-size: 1.4rem; color: var(--gold); font-weight: 700; text-decoration: none; line-height: 1; }
+  .logo small { display: block; font-family: var(--sans); font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+  .hamburger { background: none; border: none; cursor: pointer; padding: 0.4rem; display: flex; flex-direction: column; gap: 5px; -webkit-tap-highlight-color: transparent; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-drawer { display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; z-index: 199; background: rgba(8,17,31,0.99); flex-direction: column; padding: 1.5rem 1.5rem 2rem; border-top: 1px solid var(--border); overflow-y: auto; }
+  .nav-drawer.open { display: flex; }
+  .nav-links-list { list-style: none; margin-bottom: 1.5rem; }
+  .nav-links-list li { border-bottom: 1px solid var(--border); }
+  .nav-links-list a { display: flex; align-items: center; gap: 0.8rem; padding: 1rem 0; color: var(--white); text-decoration: none; font-size: 1rem; font-weight: 600; transition: color 0.2s; -webkit-tap-highlight-color: transparent; }
+  .nav-links-list a:hover, .nav-links-list a.active { color: var(--gold); }
+  .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+  .nav-join-btn { display: block; background: var(--gold); color: var(--navy); padding: 0.9rem; border-radius: 6px; text-align: center; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+
+  /* ── PAGE ── */
+  .page { padding-top: 60px; }
+  .container { padding: 1.8rem 1.1rem; }
+
+  /* ── HEADER ── */
+  .page-tag { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .page-tag::before { content: ''; width: 22px; height: 1px; background: var(--gold); flex-shrink: 0; }
+  .page-title { font-family: var(--serif); font-size: clamp(1.6rem, 6vw, 2.4rem); font-weight: 700; margin-bottom: 0.4rem; }
+  .page-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1.8rem; }
+
+  /* ── MAIN TABS ── */
+  .main-tabs { display: flex; gap: 0; margin-bottom: 1.8rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .main-tab { flex: 1; padding: 0.9rem 0.4rem; text-align: center; cursor: pointer; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); border-right: 1px solid var(--border); transition: all 0.2s; -webkit-tap-highlight-color: transparent; font-family: var(--sans); background: none; border-top: none; border-bottom: none; border-left: none; }
+  .main-tab:last-child { border-right: none; }
+  .main-tab.active { background: var(--gold); color: var(--navy); }
+  .main-tab .tab-icon { font-size: 1.2rem; display: block; margin-bottom: 0.2rem; }
+
+  /* ── TAB PANELS ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ══════════════════════════════
+     TAB 1 — SCHOLARSHIPS
+  ══════════════════════════════ */
+  .scholarship-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 1rem; overflow: hidden; transition: border-color 0.25s; }
+  .scholarship-card.open { border-color: var(--gold); }
+  .sc-head { padding: 1.1rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .sc-top { display: flex; align-items: flex-start; gap: 0.8rem; margin-bottom: 0.6rem; }
+  .sc-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .sc-info { flex: 1; }
+  .sc-title { font-family: var(--serif); font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .sc-org { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .sc-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .badge { font-size: 0.65rem; font-weight: 700; padding: 0.18rem 0.5rem; border-radius: 10px; }
+  .badge-open   { background: rgba(76,175,130,0.15); color: var(--green); }
+  .badge-soon   { background: rgba(201,151,58,0.15); color: var(--gold); }
+  .badge-closed { background: rgba(180,180,180,0.1); color: var(--muted); }
+  .badge-amount { background: rgba(80,144,208,0.15); color: var(--blue); }
+  .badge-type   { background: rgba(201,151,58,0.1);  color: var(--gold); }
+
+  .sc-deadline { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+  .deadline-bar { height: 4px; background: var(--deep); border-radius: 2px; overflow: hidden; margin-top: 0.4rem; }
+  .deadline-fill { height: 100%; border-radius: 2px; }
+
+  .sc-body { display: none; padding: 0 1.1rem 1.1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+  .sc-body.open { display: block; }
+  .sc-detail-title { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.4rem; margin-top: 0.8rem; }
+  .sc-detail-title:first-child { margin-top: 0; }
+  .sc-detail-text { font-size: 0.85rem; color: #b8c4d4; line-height: 1.7; }
+  .sc-detail-list { font-size: 0.85rem; color: #b8c4d4; line-height: 1.7; padding-left: 1.1rem; }
+
+  /* Apply form */
+  .apply-form { background: var(--deep); border-radius: 8px; padding: 1.1rem; margin-top: 1rem; }
+  .apply-form-title { font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 0.9rem; }
+  .f-row { margin-bottom: 0.85rem; }
+  .f-row label { display: block; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 0.3rem; }
+  .f-row input, .f-row select, .f-row textarea { width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 6px; color: var(--white); font-family: var(--sans); font-size: 0.95rem; padding: 0.65rem 0.9rem; outline: none; -webkit-appearance: none; transition: border-color 0.2s; }
+  .f-row input:focus, .f-row select:focus, .f-row textarea:focus { border-color: var(--gold); }
+  .f-row input::placeholder, .f-row textarea::placeholder { color: var(--muted); }
+  .f-row select option { background: var(--deep); }
+  .f-row textarea { resize: vertical; min-height: 80px; }
+  .f-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .submit-btn { width: 100%; background: var(--gold); color: var(--navy); border: none; border-radius: 6px; padding: 0.8rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: var(--sans); -webkit-tap-highlight-color: transparent; margin-top: 0.3rem; }
+  .submit-btn:hover { background: var(--gold2); }
+  .success-box { background: rgba(76,175,130,0.1); border: 1px solid rgba(76,175,130,0.3); border-radius: 6px; padding: 1rem; text-align: center; display: none; }
+  .success-box .s-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+  .success-box p { font-size: 0.85rem; color: var(--green); }
+
+  /* ══════════════════════════════
+     TAB 2 — BETWEEN-CONTRACT JOBS
+  ══════════════════════════════ */
+  .section-intro { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem; margin-bottom: 1.4rem; display: flex; gap: 0.8rem; }
+  .intro-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .intro-text h3 { font-family: var(--serif); font-size: 1rem; margin-bottom: 0.3rem; color: var(--gold); }
+  .intro-text p { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+
+  .job-filters { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1.2rem; }
+  .job-chips { display: flex; gap: 0.4rem; width: max-content; padding-bottom: 0.2rem; }
+  .jchip { padding: 0.38rem 0.8rem; border-radius: 20px; white-space: nowrap; font-size: 0.76rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); color: var(--muted); background: transparent; font-family: var(--sans); -webkit-tap-highlight-color: transparent; -webkit-appearance: none; transition: all 0.2s; }
+  .jchip.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+
+  .job-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.9rem; overflow: hidden; transition: border-color 0.25s; }
+  .job-card.open { border-color: var(--gold); }
+  .job-head { padding: 1.1rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .job-top { display: flex; align-items: flex-start; gap: 0.8rem; }
+  .company-logo { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+  .job-info { flex: 1; }
+  .job-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .job-company { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .job-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .job-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+  .job-salary { font-size: 0.78rem; color: var(--green); font-weight: 600; }
+  .job-duration { font-size: 0.72rem; color: var(--muted); }
+  .job-expand { font-size: 0.7rem; color: var(--gold); font-weight: 600; }
+
+  .job-body { display: none; padding: 0 1.1rem 1.1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+  .job-body.open { display: block; }
+  .job-section-title { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 0.4rem; margin-top: 0.8rem; }
+  .job-section-title:first-child { margin-top: 0; }
+  .job-text { font-size: 0.85rem; color: #b8c4d4; line-height: 1.7; }
+  .job-list { font-size: 0.85rem; color: #b8c4d4; line-height: 1.7; padding-left: 1.1rem; }
+
+  /* Post a job panel */
+  .post-job-btn { width: 100%; background: transparent; border: 1px dashed rgba(201,151,58,0.4); border-radius: 8px; padding: 1rem; color: var(--gold); font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: var(--sans); -webkit-tap-highlight-color: transparent; margin-bottom: 1.2rem; transition: background 0.2s; }
+  .post-job-btn:hover { background: rgba(201,151,58,0.06); }
+  .post-job-panel { display: none; background: var(--card); border: 1px solid var(--gold); border-radius: 10px; padding: 1.2rem; margin-bottom: 1.2rem; }
+  .post-job-panel.open { display: block; }
+
+  /* ══════════════════════════════
+     TAB 3 — CAREER JOURNEY
+  ══════════════════════════════ */
+  .journey-intro { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem; margin-bottom: 1.4rem; }
+  .journey-intro h3 { font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 0.4rem; }
+  .journey-intro p { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+
+  /* Journey form */
+  .journey-form { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin-bottom: 1.4rem; }
+  .journey-form h3 { font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 1rem; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 1.6rem; }
+  .timeline::before { content: ''; position: absolute; left: 0.55rem; top: 0; bottom: 0; width: 2px; background: var(--border); }
+
+  .tl-item { position: relative; margin-bottom: 1.2rem; }
+  .tl-dot { position: absolute; left: -1.6rem; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 0.55rem; top: 0.2rem; }
+  .tl-dot.onboard  { background: var(--gold);  border-color: var(--gold);  }
+  .tl-dot.home     { background: var(--green); border-color: var(--green); }
+  .tl-dot.studying { background: var(--blue);  border-color: var(--blue);  }
+  .tl-dot.promoted { background: #dc7850;      border-color: #dc7850;      }
+
+  .tl-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem; }
+  .tl-card.onboard  { border-left: 3px solid var(--gold);  }
+  .tl-card.home     { border-left: 3px solid var(--green); }
+  .tl-card.studying { border-left: 3px solid var(--blue);  }
+  .tl-card.promoted { border-left: 3px solid #dc7850;      }
+
+  .tl-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem; }
+  .tl-title { font-size: 0.9rem; font-weight: 700; }
+  .tl-type-badge { font-size: 0.62rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 10px; white-space: nowrap; }
+  .tb-onboard  { background: rgba(201,151,58,0.15); color: var(--gold); }
+  .tb-home     { background: rgba(76,175,130,0.15); color: var(--green); }
+  .tb-studying { background: rgba(80,144,208,0.15); color: var(--blue); }
+  .tb-promoted { background: rgba(220,120,80,0.15); color: #dc7850; }
+
+  .tl-meta { font-size: 0.73rem; color: var(--muted); margin-bottom: 0.3rem; }
+  .tl-note { font-size: 0.78rem; color: #b0bcd0; line-height: 1.55; }
+
+  .add-entry-btn { width: 100%; background: transparent; border: 1px dashed rgba(201,151,58,0.4); border-radius: 8px; padding: 0.9rem; color: var(--gold); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: var(--sans); -webkit-tap-highlight-color: transparent; margin-bottom: 1.4rem; transition: background 0.2s; }
+  .add-entry-btn:hover { background: rgba(201,151,58,0.06); }
+
+  .add-entry-panel { display: none; background: var(--card); border: 1px solid var(--gold); border-radius: 10px; padding: 1.2rem; margin-bottom: 1.2rem; }
+  .add-entry-panel.open { display: block; }
+  .panel-title { font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 1rem; }
+
+  /* Career path visual */
+  .career-path { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin-bottom: 1.4rem; }
+  .career-path h3 { font-family: var(--serif); font-size: 1rem; color: var(--gold); margin-bottom: 1rem; }
+  .cp-steps { display: flex; flex-direction: column; gap: 0; }
+  .cp-step { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+  .cp-step:last-child { border-bottom: none; }
+  .cp-num { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+  .cp-num.done { background: var(--green); }
+  .cp-num.current { background: var(--gold); }
+  .cp-num.future { background: var(--deep); border: 1px solid var(--border); color: var(--muted); }
+  .cp-content { flex: 1; }
+  .cp-label { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.1rem; }
+  .cp-sub { font-size: 0.72rem; color: var(--muted); }
+  .cp-status { font-size: 0.7rem; font-weight: 600; }
+  .cp-status.done { color: var(--green); }
+  .cp-status.current { color: var(--gold); }
+  .cp-status.future { color: var(--muted); }
+
+  /* Cancel btn */
+  .cancel-btn { width: 100%; background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: var(--sans); margin-top: 0.5rem; -webkit-tap-highlight-color: transparent; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 1.2rem; text-align: center; margin-top: 2rem; }
+  footer p { font-size: 0.75rem; color: var(--muted); }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 380px) {
+    .f-row-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">ETCT <small>Ethiopian Cadets Association</small></a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-drawer" id="navDrawer">
+  <ul class="nav-links-list">
+    <li><a href="index.html"><span class="nav-icon">🏠</span> Home</a></li>
+    <li><a href="index.html#features"><span class="nav-icon">⚓</span> About</a></li>
+    <li><a href="members.html"><span class="nav-icon">👥</span> Members</a></li>
+    <li><a href="courses.html"><span class="nav-icon">📚</span> Courses</a></li>
+    <li><a href="financial.html" class="active"><span class="nav-icon">💰</span> Financial Aid & Career</a></li>
+    <li><a href="forum.html"><span class="nav-icon">💬</span> Discussion Forum</a></li>
+    <li><a href="index.html#register"><span class="nav-icon">📝</span> Register</a></li>
+  </ul>
+  <a href="index.html#register" class="nav-join-btn">✦ Join ETCT Now</a>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+<div class="container">
+
+  <div class="page-tag">Financial Aid & Career</div>
+  <h1 class="page-title">Your Maritime Journey</h1>
+  <p class="page-sub">Scholarships, between-contract jobs in Ethiopia, and a tracker for your full career from cadet to officer.</p>
+
+  <!-- MAIN TABS -->
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="switchTab('scholarships',this)"><span class="tab-icon">📚</span>Scholarships</button>
+    <button class="main-tab" onclick="switchTab('jobs',this)"><span class="tab-icon">💼</span>Ethiopia Jobs</button>
+    <button class="main-tab" onclick="switchTab('journey',this)"><span class="tab-icon">🚢</span>My Journey</button>
+  </div>
+
+  <!-- ══ TAB 1: SCHOLARSHIPS ══ -->
+  <div class="tab-panel active" id="tab-scholarships">
+    <div id="scholarshipList"></div>
+  </div>
+
+  <!-- ══ TAB 2: BETWEEN-CONTRACT JOBS ══ -->
+  <div class="tab-panel" id="tab-jobs">
+
+    <div class="section-intro">
+      <div class="intro-icon">💡</div>
+      <div class="intro-text">
+        <h3>Between-Contract Job Board</h3>
+        <p>Finished your ship contract and back home in Ethiopia? Don't let the gap go to waste. Find short-term jobs that match your maritime skills while you wait for your next contract.</p>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="job-filters">
+      <div class="job-chips">
+        <button class="jchip active" onclick="filterJobs(this,'all')">All Jobs</button>
+        <button class="jchip" onclick="filterJobs(this,'technical')">🔧 Technical</button>
+        <button class="jchip" onclick="filterJobs(this,'logistics')">🚛 Logistics</button>
+        <button class="jchip" onclick="filterJobs(this,'training')">🎓 Training</button>
+        <button class="jchip" onclick="filterJobs(this,'office')">🏢 Office</button>
+      </div>
+    </div>
+
+    <!-- Post a job -->
+    <button class="post-job-btn" onclick="togglePostJob()">+ Post a Job for Returning Cadets</button>
+    <div class="post-job-panel" id="postJobPanel">
+      <div class="panel-title">Post a Short-Term Job</div>
+      <div class="f-row"><label>Company Name *</label><input type="text" id="pj-company" placeholder="e.g. Addis Logistics PLC"></div>
+      <div class="f-row"><label>Job Title *</label><input type="text" id="pj-title" placeholder="e.g. Technical Inspector"></div>
+      <div class="f-row-2">
+        <div class="f-row"><label>Category *</label>
+          <select id="pj-cat">
+            <option value="" disabled selected>Select</option>
+            <option value="technical">🔧 Technical</option>
+            <option value="logistics">🚛 Logistics</option>
+            <option value="training">🎓 Training</option>
+            <option value="office">🏢 Office</option>
+          </select>
+        </div>
+        <div class="f-row"><label>Duration *</label><input type="text" id="pj-duration" placeholder="e.g. 2–3 months"></div>
+      </div>
+      <div class="f-row-2">
+        <div class="f-row"><label>Location</label><input type="text" id="pj-location" placeholder="e.g. Addis Ababa"></div>
+        <div class="f-row"><label>Salary (ETB/month)</label><input type="text" id="pj-salary" placeholder="e.g. 15,000"></div>
+      </div>
+      <div class="f-row"><label>Job Description *</label><textarea id="pj-desc" placeholder="Describe the role, responsibilities, and why it suits returning maritime cadets..."></textarea></div>
+      <div class="f-row"><label>Contact / How to Apply *</label><input type="text" id="pj-contact" placeholder="Email, phone, or website"></div>
+      <div id="pj-err" style="color:#e05a5a;font-size:0.8rem;margin-bottom:0.6rem;display:none">Please fill in all required fields.</div>
+      <button class="submit-btn" onclick="postJob()">Post Job</button>
+      <button class="cancel-btn" onclick="togglePostJob()">Cancel</button>
+    </div>
+
+    <div id="jobList"></div>
+  </div>
+
+  <!-- ══ TAB 3: CAREER JOURNEY ══ -->
+  <div class="tab-panel" id="tab-journey">
+
+    <div class="journey-intro">
+      <h3>Track Your Full Maritime Career</h3>
+      <p>Log every stage of your journey — on board contracts, home periods with Ethiopia jobs, promotions, and qualifications. Build a complete career record from cadet to Captain.</p>
+    </div>
+
+    <!-- Career Path Overview -->
+    <div class="career-path">
+      <h3>🗺 Standard Maritime Career Path</h3>
+      <div class="cp-steps" id="careerPath"></div>
+    </div>
+
+    <!-- Add Entry -->
+    <button class="add-entry-btn" onclick="toggleAddEntry()">+ Log New Career Entry</button>
+    <div class="add-entry-panel" id="addEntryPanel">
+      <div class="panel-title">Log a Career Entry</div>
+      <div class="f-row">
+        <label>Entry Type *</label>
+        <select id="et-type" onchange="updateEntryForm()">
+          <option value="" disabled selected>Select type</option>
+          <option value="onboard">🚢 On Board Contract</option>
+          <option value="home">🏠 Home Period (Ethiopia Job)</option>
+          <option value="studying">📚 Studying / Training</option>
+          <option value="promoted">⭐ Promotion / New Rank</option>
+        </select>
+      </div>
+      <div id="entryFormFields"></div>
+      <div id="et-err" style="color:#e05a5a;font-size:0.8rem;margin-bottom:0.6rem;display:none">Please fill in required fields.</div>
+      <button class="submit-btn" onclick="addEntry()">Save Entry</button>
+      <button class="cancel-btn" onclick="toggleAddEntry()">Cancel</button>
+    </div>
+
+    <!-- Timeline -->
+    <h3 style="font-family:var(--serif);font-size:1rem;color:var(--gold);margin-bottom:1rem;">📅 My Career Timeline</h3>
+    <div class="timeline" id="careerTimeline"></div>
+    <div id="timelineEmpty" style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:0.85rem">
+      <div style="font-size:2.5rem;margin-bottom:0.6rem">🚢</div>
+      <p>No entries yet. Tap "+ Log New Career Entry" to start your career record.</p>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <p>ETCT Association · <a href="index.html">Home</a> · <a href="forum.html">Forum</a> · © 2026 All rights reserved.</p>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMenu() {
+  var h = document.getElementById('hamburger');
+  var d = document.getElementById('navDrawer');
+  h.classList.toggle('open');
+  d.classList.toggle('open');
+  document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+}
+document.querySelectorAll('.nav-links-list a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('navDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// ── TAB SWITCHING ──
+function switchTab(name, el) {
+  document.querySelectorAll('.main-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ══════════════════════════════
+// TAB 1 — SCHOLARSHIPS
+// ══════════════════════════════
+var scholarships = [
+  {
+    id:1, icon:'🎓', status:'open', statusLabel:'Open',
+    title:'ETCT Merit Scholarship 2026',
+    org:'ETCT Association',
+    amount:'ETB 25,000', type:'Full scholarship',
+    deadline:'31 July 2026', daysLeft:64, totalDays:120,
+    eligibility:['Top 10% of your training institute class','Active ETCT member for at least 6 months','Ethiopian national','Age 18–28'],
+    description:'The ETCT Merit Scholarship is awarded annually to outstanding Ethiopian maritime cadets who demonstrate academic excellence, commitment to the profession, and community involvement.',
+    howToApply:'Complete the application form below. Attach your training transcripts, a recommendation letter from your institute principal, and a 300-word personal statement on why you want a maritime career.',
+    contact:'scholarships@etct.org.et'
+  },
+  {
+    id:2, icon:'🏢', status:'open', statusLabel:'Open',
+    title:'Anglo-Eastern Cadet Sponsorship',
+    org:'Anglo-Eastern Ship Management',
+    amount:'Full training fees', type:'Company sponsorship',
+    deadline:'15 August 2026', daysLeft:79, totalDays:120,
+    eligibility:['Pre-sea or 1st year cadets only','Medical fitness certificate required','English proficiency','Ethiopian or any nationality'],
+    description:'Anglo-Eastern offers sponsored cadetship programs where they cover your full training fees in exchange for a commitment to sail with their fleet after graduation. One of the most respected cadet programs in the world.',
+    howToApply:'Apply directly through Anglo-Eastern\'s website at angloeasterngroup.com/careers. ETCT can provide a referral letter — contact us before applying.',
+    contact:'careers@angloeasterngroup.com'
+  },
+  {
+    id:3, icon:'🏦', status:'soon', statusLabel:'Opening Soon',
+    title:'Commercial Bank Education Loan — Maritime',
+    org:'Commercial Bank of Ethiopia',
+    amount:'Up to ETB 150,000', type:'Education loan',
+    deadline:'Opens September 2026', daysLeft:95, totalDays:180,
+    eligibility:['Ethiopian national','Accepted at accredited maritime institute','Guarantor required','Age 18–35'],
+    description:'CBE offers education loans specifically for professional training programs including maritime courses. The loan covers tuition, training materials, and STCW exam fees. Repayment begins 6 months after graduation.',
+    howToApply:'Visit any CBE branch with your admission letter, national ID, and guarantor details. ETCT can provide supporting documentation to strengthen your application.',
+    contact:'Visit nearest CBE branch'
+  },
+  {
+    id:4, icon:'🤝', status:'open', statusLabel:'Open',
+    title:'ETCT Emergency Hardship Fund',
+    org:'ETCT Association',
+    amount:'Up to ETB 10,000', type:'Emergency grant',
+    deadline:'Rolling — apply anytime', daysLeft:999, totalDays:999,
+    eligibility:['Active ETCT member','Genuine financial hardship (medical, family emergency, training interruption)','Not previously received emergency fund in same year'],
+    description:'For ETCT members facing unexpected financial difficulty that threatens to interrupt their maritime training or career. This is a grant — it does not need to be repaid. Applications are reviewed within 7 working days.',
+    howToApply:'Complete the application form below with a brief explanation of your situation. All applications are treated with complete confidentiality.',
+    contact:'emergency@etct.org.et'
+  },
+  {
+    id:5, icon:'🌍', status:'closed', statusLabel:'Closed',
+    title:'IMO International Maritime Prize',
+    org:'International Maritime Organization',
+    amount:'USD 3,000', type:'International award',
+    deadline:'Closed — opens April 2027', daysLeft:0, totalDays:100,
+    eligibility:['Must be nominated by a member state (Ethiopia)','Outstanding contribution to maritime safety or environment'],
+    description:'The IMO International Maritime Prize is awarded annually to individuals or organizations that have made an exceptional contribution to the work of IMO. ETCT can support nominations from Ethiopian maritime professionals.',
+    howToApply:'Applications for 2027 will open in April 2027. Contact ETCT to discuss whether you qualify for a nomination.',
+    contact:'imo@etct.org.et'
+  },
+];
+
+var openScholarshipId = null;
+var appliedScholarships = {};
+
+function renderScholarships() {
+  var html = scholarships.map(function(s) {
+    var isOpen = openScholarshipId === s.id;
+    var pct = s.daysLeft === 999 ? 80 : Math.round((s.daysLeft / s.totalDays) * 100);
+    var fillColor = pct > 50 ? 'var(--green)' : pct > 20 ? 'var(--gold)' : 'var(--red)';
+    var statusCls = s.status === 'open' ? 'badge-open' : s.status === 'soon' ? 'badge-soon' : 'badge-closed';
+    var applied = appliedScholarships[s.id];
+
+    var eligHtml = s.eligibility.map(function(e){ return '<li>'+e+'</li>'; }).join('');
+
+    var applyHtml = s.status === 'closed'
+      ? '<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.85rem">This scholarship is currently closed. Check back when it reopens.</div>'
+      : applied
+        ? '<div class="success-box" style="display:block"><div class="s-icon">✅</div><p>Application submitted! We will contact you at the email you provided within 5 working days.</p></div>'
+        : '<div class="apply-form"><div class="apply-form-title">Apply for ' + s.title + '</div>'
+          + '<div class="f-row-2">'
+          + '<div class="f-row"><label>Full Name *</label><input type="text" id="sa-name-'+s.id+'" placeholder="Your full name"></div>'
+          + '<div class="f-row"><label>Age</label><input type="text" id="sa-age-'+s.id+'" placeholder="e.g. 22"></div>'
+          + '</div>'
+          + '<div class="f-row"><label>Email *</label><input type="email" id="sa-email-'+s.id+'" placeholder="your@email.com"></div>'
+          + '<div class="f-row"><label>Phone *</label><input type="tel" id="sa-phone-'+s.id+'" placeholder="+251 91 234 5678"></div>'
+          + '<div class="f-row"><label>Training Institute *</label><input type="text" id="sa-institute-'+s.id+'" placeholder="Your institute name"></div>'
+          + '<div class="f-row"><label>Current Rank / Year *</label><input type="text" id="sa-rank-'+s.id+'" placeholder="e.g. 2nd Year Deck Cadet"></div>'
+          + '<div class="f-row"><label>Why do you deserve this scholarship? *</label><textarea id="sa-why-'+s.id+'" placeholder="Tell us about your situation, achievements, and why you should be selected (min 100 words)..."></textarea></div>'
+          + '<div id="sa-err-'+s.id+'" style="color:#e05a5a;font-size:0.8rem;margin-bottom:0.6rem;display:none">Please fill in all required fields.</div>'
+          + '<button class="submit-btn" onclick="applyScholarship('+s.id+')">Submit Application</button>'
+          + '</div>';
+
+    return '<div class="scholarship-card'+(isOpen?' open':'')+'" id="sc-'+s.id+'">'
+      + '<div class="sc-head" onclick="toggleScholarship('+s.id+')">'
+      + '<div class="sc-top">'
+      + '<div class="sc-icon">'+s.icon+'</div>'
+      + '<div class="sc-info">'
+      + '<div class="sc-title">'+s.title+'</div>'
+      + '<div class="sc-org">'+s.org+'</div>'
+      + '<div class="sc-badges">'
+      + '<span class="badge '+statusCls+'">'+s.statusLabel+'</span>'
+      + '<span class="badge badge-amount">'+s.amount+'</span>'
+      + '<span class="badge badge-type">'+s.type+'</span>'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="sc-deadline">'
+      + '<span>⏰ Deadline: '+s.deadline+'</span>'
+      + '</div>'
+      + (s.daysLeft !== 999 ? '<div class="deadline-bar"><div class="deadline-fill" style="width:'+pct+'%;background:'+fillColor+'"></div></div>' : '')
+      + '</div>'
+      + '<div class="sc-body'+(isOpen?' open':'')+'">'
+      + '<div class="sc-detail-title">About this scholarship</div>'
+      + '<div class="sc-detail-text">'+s.description+'</div>'
+      + '<div class="sc-detail-title">Eligibility</div>'
+      + '<ul class="sc-detail-list">'+eligHtml+'</ul>'
+      + '<div class="sc-detail-title">How to apply</div>'
+      + '<div class="sc-detail-text">'+s.howToApply+'</div>'
+      + '<div class="sc-detail-title">Contact</div>'
+      + '<div class="sc-detail-text">'+s.contact+'</div>'
+      + applyHtml
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  document.getElementById('scholarshipList').innerHTML = html;
+}
+
+function toggleScholarship(id) {
+  openScholarshipId = (openScholarshipId === id) ? null : id;
+  renderScholarships();
+  if (openScholarshipId) {
+    setTimeout(function(){
+      var el = document.getElementById('sc-'+id);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 60);
+  }
+}
+
+function applyScholarship(id) {
+  var name     = document.getElementById('sa-name-'+id).value.trim();
+  var email    = document.getElementById('sa-email-'+id).value.trim();
+  var phone    = document.getElementById('sa-phone-'+id).value.trim();
+  var inst     = document.getElementById('sa-institute-'+id).value.trim();
+  var rank     = document.getElementById('sa-rank-'+id).value.trim();
+  var why      = document.getElementById('sa-why-'+id).value.trim();
+  var errEl    = document.getElementById('sa-err-'+id);
+  if (!name || !email || !phone || !inst || !rank || !why) { errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  appliedScholarships[id] = true;
+  renderScholarships();
+  setTimeout(function(){
+    var el = document.getElementById('sc-'+id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 60);
+}
+
+// ══════════════════════════════
+// TAB 2 — JOBS
+// ══════════════════════════════
+var jobs = [
+  { id:1, cat:'technical', company:'Ethio Engineering Group', logo:'🏗', logoColor:'linear-gradient(135deg,#c9973a,#5a3e10)', title:'Marine Technical Inspector', location:'Addis Ababa', duration:'3 months', salary:'ETB 18,000/month', description:'Inspect and certify maritime equipment imported through Ethiopia. Your technical knowledge of marine machinery will be directly applied.', requirements:['Engine or deck cadet, 2nd year minimum','Knowledge of marine diesel engines','Report writing in English','Ethiopian national'], contact:'jobs@ethioengineering.et' },
+  { id:2, cat:'logistics', company:'Ethiopian Shipping & Logistics', logo:'🚢', logoColor:'linear-gradient(135deg,#4caf82,#1a5c3a)', title:'Port Operations Assistant', location:'Dire Dawa / Djibouti corridor', duration:'2–4 months', salary:'ETB 22,000/month', description:'Support port logistics operations on the Ethiopia–Djibouti corridor. Ideal for cadets with knowledge of cargo operations and documentation.', requirements:['Any maritime cadet','Knowledge of shipping documents (Bill of Lading, Manifest)','Willingness to travel Addis–Djibouti corridor','Driving license a plus'], contact:'hr@eslse.et' },
+  { id:3, cat:'training', company:'EMTI (Ethiopian Maritime Training Institute)', logo:'🎓', logoColor:'linear-gradient(135deg,#5070c0,#1a2a60)', title:'Practical Training Assistant', location:'Addis Ababa', duration:'1–3 months (renewable)', salary:'ETB 14,000/month', description:'Assist instructors in delivering practical STCW training to new students. Share your real sea experience with the next generation of Ethiopian cadets.', requirements:['Minimum 1 contract of sea service completed','Strong communication skills','Passion for teaching','STCW BST certificate valid'], contact:'training@emti.edu.et' },
+  { id:4, cat:'office', company:'Habesha Freight & Forwarding', logo:'📦', logoColor:'linear-gradient(135deg,#7050c0,#301060)', title:'Shipping Documentation Officer', location:'Addis Ababa', duration:'2–3 months', salary:'ETB 12,000/month', description:'Process and verify shipping documentation for freight passing through Ethiopian customs. Your knowledge of maritime terminology and documents is a huge advantage.', requirements:['Any maritime background','Computer skills (Excel, Word)','Attention to detail','Amharic and English fluency'], contact:'habeshafreight@ethionet.et' },
+  { id:5, cat:'technical', company:'Nile Basin Marine Services', logo:'🔧', logoColor:'linear-gradient(135deg,#c05060,#601020)', title:'Marine Equipment Maintenance Technician', location:'Gambella / Lake Tana', duration:'3–6 months', salary:'ETB 20,000/month', description:'Maintain and repair marine engines and equipment used on Ethiopian inland waterways. A rare and valuable opportunity to work on Ethiopian waters.', requirements:['Engine cadet preferred','Knowledge of small diesel engines','Willingness to work in regional areas','Physically fit'], contact:'nilebasin.marine@gmail.com' },
+];
+
+var userPostedJobs = [];
+var openJobId = null;
+var activeJobFilter = 'all';
+
+function filterJobs(el, cat) {
+  document.querySelectorAll('.jchip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  activeJobFilter = cat;
+  openJobId = null;
+  renderJobs();
+}
+
+function renderJobs() {
+  var allJobs = jobs.concat(userPostedJobs);
+  var filtered = allJobs.filter(function(j){
+    return activeJobFilter === 'all' || j.cat === activeJobFilter;
+  });
+
+  if (!filtered.length) {
+    document.getElementById('jobList').innerHTML = '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:0.6rem">💼</div><p>No jobs found. Check back soon or post one!</p></div>';
+    return;
+  }
+
+  document.getElementById('jobList').innerHTML = filtered.map(function(j) {
+    var isOpen = openJobId === j.id;
+    var reqHtml = j.requirements.map(function(r){ return '<li>'+r+'</li>'; }).join('');
+    return '<div class="job-card'+(isOpen?' open':'')+'" id="jc-'+j.id+'">'
+      + '<div class="job-head" onclick="toggleJob('+j.id+')">'
+      + '<div class="job-top">'
+      + '<div class="company-logo" style="background:'+j.logoColor+'">'+j.logo+'</div>'
+      + '<div class="job-info">'
+      + '<div class="job-title">'+j.title+'</div>'
+      + '<div class="job-company">'+j.company+' · 📍 '+j.location+'</div>'
+      + '<div class="job-tags">'
+      + '<span class="badge badge-open">Available</span>'
+      + '<span class="badge badge-type">⏱ '+j.duration+'</span>'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="job-footer">'
+      + '<span class="job-salary">'+j.salary+'</span>'
+      + '<span class="job-expand">'+(isOpen?'▲ Less':'▼ Details')+'</span>'
+      + '</div>'
+      + '</div>'
+      + '<div class="job-body'+(isOpen?' open':'')+'">'
+      + '<div class="job-section-title">About this role</div>'
+      + '<div class="job-text">'+j.description+'</div>'
+      + '<div class="job-section-title">Requirements</div>'
+      + '<ul class="job-list">'+reqHtml+'</ul>'
+      + '<div class="job-section-title">How to apply</div>'
+      + '<div class="job-text">Contact: <strong>'+j.contact+'</strong><br>Mention that you found this listing through ETCT Association.</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function toggleJob(id) {
+  openJobId = (openJobId === id) ? null : id;
+  renderJobs();
+  if (openJobId) {
+    setTimeout(function(){
+      var el = document.getElementById('jc-'+id);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 60);
+  }
+}
+
+function togglePostJob() {
+  var p = document.getElementById('postJobPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) {
+    setTimeout(function(){ p.scrollIntoView({ behavior:'smooth', block:'start' }); }, 60);
+  }
+}
+
+function postJob() {
+  var company  = document.getElementById('pj-company').value.trim();
+  var title    = document.getElementById('pj-title').value.trim();
+  var cat      = document.getElementById('pj-cat').value;
+  var duration = document.getElementById('pj-duration').value.trim();
+  var location = document.getElementById('pj-location').value.trim() || 'Ethiopia';
+  var salary   = document.getElementById('pj-salary').value.trim() || 'Negotiable';
+  var desc     = document.getElementById('pj-desc').value.trim();
+  var contact  = document.getElementById('pj-contact').value.trim();
+  var err      = document.getElementById('pj-err');
+
+  if (!company || !title || !cat || !duration || !desc || !contact) { err.style.display='block'; return; }
+  err.style.display='none';
+
+  var icons = { technical:'🔧', logistics:'🚛', training:'🎓', office:'🏢' };
+  var colors = { technical:'linear-gradient(135deg,#c9973a,#5a3e10)', logistics:'linear-gradient(135deg,#4caf82,#1a5c3a)', training:'linear-gradient(135deg,#5070c0,#1a2a60)', office:'linear-gradient(135deg,#7050c0,#301060)' };
+
+  userPostedJobs.push({
+    id: Date.now(), cat: cat, company: company,
+    logo: icons[cat], logoColor: colors[cat],
+    title: title, location: location, duration: duration,
+    salary: 'ETB '+salary+'/month', description: desc,
+    requirements: ['Maritime background preferred'], contact: contact
+  });
+
+  document.getElementById('pj-company').value=''; document.getElementById('pj-title').value='';
+  document.getElementById('pj-cat').value=''; document.getElementById('pj-duration').value='';
+  document.getElementById('pj-location').value=''; document.getElementById('pj-salary').value='';
+  document.getElementById('pj-desc').value=''; document.getElementById('pj-contact').value='';
+
+  togglePostJob();
+  renderJobs();
+}
+
+// ══════════════════════════════
+// TAB 3 — CAREER JOURNEY
+// ══════════════════════════════
+var careerEntries = [];
+
+var careerSteps = [
+  { label:'Pre-Sea Training',        sub:'STCW BST + Pre-sea course',         status:'future' },
+  { label:'Deck / Engine Cadet',     sub:'First on board contract',            status:'future' },
+  { label:'3rd Officer / 4th Eng',   sub:'Officer of the Watch certificate',   status:'future' },
+  { label:'2nd Officer / 3rd Eng',   sub:'2 years OOW experience',             status:'future' },
+  { label:'Chief Officer / 2nd Eng', sub:'Advanced certificate',               status:'future' },
+  { label:'Master / Chief Engineer', sub:'Command certificate',                 status:'future' },
+];
+
+function renderCareerPath() {
+  document.getElementById('careerPath').innerHTML = careerSteps.map(function(s, i) {
+    return '<div class="cp-step">'
+      + '<div class="cp-num '+s.status+'">'+(s.status==='done'?'✓':s.status==='current'?'▶':(i+1))+'</div>'
+      + '<div class="cp-content"><div class="cp-label">'+s.label+'</div><div class="cp-sub">'+s.sub+'</div></div>'
+      + '<div class="cp-status '+s.status+'">'+(s.status==='done'?'Done':s.status==='current'?'Current':'—')+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderTimeline() {
+  var el = document.getElementById('careerTimeline');
+  var empty = document.getElementById('timelineEmpty');
+  if (!careerEntries.length) { el.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  el.innerHTML = careerEntries.map(function(e) {
+    var typeLabels = { onboard:'🚢 On Board', home:'🏠 Home / Ethiopia Job', studying:'📚 Studying', promoted:'⭐ Promotion' };
+    var tbCls = 'tb-'+e.type;
+    var dotCls = e.type;
+    return '<div class="tl-item">'
+      + '<div class="tl-dot '+dotCls+'"></div>'
+      + '<div class="tl-card '+e.type+'">'
+      + '<div class="tl-header">'
+      + '<div class="tl-title">'+e.title+'</div>'
+      + '<span class="tl-type-badge '+tbCls+'">'+typeLabels[e.type]+'</span>'
+      + '</div>'
+      + '<div class="tl-meta">📅 '+e.from+(e.to?' → '+e.to:' → Present')+(e.location?' · 📍 '+e.location:'')+'</div>'
+      + (e.note?'<div class="tl-note">'+e.note+'</div>':'')
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function toggleAddEntry() {
+  var p = document.getElementById('addEntryPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) {
+    document.getElementById('et-type').value='';
+    document.getElementById('entryFormFields').innerHTML='';
+    setTimeout(function(){ p.scrollIntoView({ behavior:'smooth', block:'start' }); }, 60);
+  }
+}
+
+function updateEntryForm() {
+  var type = document.getElementById('et-type').value;
+  var titles = { onboard:'Ship & Contract Details', home:'Ethiopia Job Details', studying:'Course / Training Details', promoted:'New Rank Details' };
+  var placeholders = {
+    onboard: { title:'e.g. Deck Cadet on MV Atlantic Star', company:'e.g. Anglo-Eastern Ship Management', location:'e.g. Various ports worldwide' },
+    home:    { title:'e.g. Technical Inspector at Ethio Engineering', company:'e.g. Ethio Engineering Group', location:'e.g. Addis Ababa' },
+    studying:{ title:'e.g. OOW Navigation Course', company:'e.g. Ethiopian Maritime Training Institute', location:'e.g. Addis Ababa' },
+    promoted:{ title:'e.g. Promoted to 3rd Officer', company:'e.g. Anglo-Eastern Ship Management', location:'e.g. On board MV Pacific Glory' },
+  };
+  if (!type) { document.getElementById('entryFormFields').innerHTML=''; return; }
+  var p = placeholders[type];
+  document.getElementById('entryFormFields').innerHTML =
+    '<div class="f-row"><label>'+titles[type]+' *</label><input type="text" id="et-title" placeholder="'+p.title+'"></div>'
+    + '<div class="f-row"><label>Company / Institute</label><input type="text" id="et-company" placeholder="'+p.company+'"></div>'
+    + '<div class="f-row"><label>Location</label><input type="text" id="et-location" placeholder="'+p.location+'"></div>'
+    + '<div class="f-row-2">'
+    + '<div class="f-row"><label>Start Date *</label><input type="text" id="et-from" placeholder="e.g. Jan 2025"></div>'
+    + '<div class="f-row"><label>End Date</label><input type="text" id="et-to" placeholder="e.g. Aug 2025 or leave blank if ongoing"></div>'
+    + '</div>'
+    + '<div class="f-row"><label>Notes</label><textarea id="et-note" placeholder="Any achievements, lessons learned, vessels sailed, promotions..."></textarea></div>';
+}
+
+function addEntry() {
+  var type  = document.getElementById('et-type').value;
+  var title = document.getElementById('et-title') ? document.getElementById('et-title').value.trim() : '';
+  var from  = document.getElementById('et-from')  ? document.getElementById('et-from').value.trim()  : '';
+  var err   = document.getElementById('et-err');
+  if (!type || !title || !from) { err.style.display='block'; return; }
+  err.style.display='none';
+
+  careerEntries.unshift({
+    type: type, title: title,
+    company:  (document.getElementById('et-company')  ? document.getElementById('et-company').value.trim()  : ''),
+    location: (document.getElementById('et-location') ? document.getElementById('et-location').value.trim() : ''),
+    from: from,
+    to:   (document.getElementById('et-to')   ? document.getElementById('et-to').value.trim()   : ''),
+    note: (document.getElementById('et-note') ? document.getElementById('et-note').value.trim() : ''),
+  });
+
+  // Update career path
+  var typeToStep = { presea:0, onboard:1, studying:2, promoted:3 };
+  careerSteps.forEach(function(s){ if(s.status==='current') s.status='done'; });
+  if (type === 'promoted') {
+    var nextFuture = careerSteps.find(function(s){ return s.status==='future'; });
+    if (nextFuture) nextFuture.status = 'current';
+  } else if (type === 'onboard') {
+    if (careerSteps[1].status === 'future') careerSteps[1].status = 'current';
+  }
+
+  toggleAddEntry();
+  renderTimeline();
+  renderCareerPath();
+}
+
+// ── INIT ──
+renderScholarships();
+renderJobs();
+renderCareerPath();
+renderTimeline();
+</script>
+</body>
+</html>
